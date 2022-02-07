@@ -1,11 +1,10 @@
 ---
-title: "My title"
-subtitle: "My subtitle if needed"
+title: "The connection between Toronto apartments built age and evaluation scores in three Toronto wards Spadina-Fort York, Toronto Centre and University-Rosedale"
 author: 
   - Yuqiao Lin
-thanks: "Code and data are available at: LINK."
+thanks: "Code and data are available at: https://github.com/Yukiu-Lam/Apartment."
 date: "`r format(Sys.time(), '%d %B %Y')`"
-abstract: "First sentence. Second sentence. Third sentence. Fourth sentence."
+abstract: "The apartment evaluation data was pulled from Open Data Toronto to analyze the change in evaluation scores with the building age. Although the built year does not affect evaluation scores before 2000, the scores increase with the newer apartments when the apartment was built after 2000. This would be true at least in both Spadina-Fort York and University-Rosedale. This paper purposes to let tenants have a better understanding of the relationship between built years and evaluation scores."
 output:
   bookdown::pdf_document2
 toc: FALSE
@@ -15,34 +14,45 @@ bibliography: references.bib
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 options(tinytex.verbose = TRUE)
-library(plyr)
+
 library(tidyverse)
-library(tidyr)
 library(dplyr)
-library(knitr)
-library(tinytex)
-library(usethis)
 ```
 
 # Introduction
 
-You can and should cross-reference sections and sub-sections. For instance, Section \@ref(data). R Markdown automatically makes the sections lower case and adds a dash to spaces to generate labels, for instance, Section \@ref(first-discussion-point). 
-
-
+When people prepare to rent an apartment, there are many factors to consider. The interior amenities of the apartment and the surrounding environment are especially important factors. The surrounding environment includes but is not limited to supermarkets, transportation, hospitals, etc., while the interior amenities of the apartment include decoration, ceilings, heating and ventilation systems, etc. However, the age at which the apartment was built is also worth considering. This is because the older the building, the more likely it is to have serious defects, especially in critical mechanical systems such as electrical, plumbing systems, Heating Ventilation Air Conditioning, ceiling and floor [@citeAging]. Additionally, tenants need to pay extra premiums to buy insurance. The reason is that older buildings may generate more claims than new ones, especially if they are not well maintained or their mechanical systems are not updated [@citeAging]. Although the elder age of the building does not mean that the old apartment is not well maintained, tenants will consider a correlation between them. In this paper, I attempt to reveal the relationship between apartment building age and inspection of the apartment building through the data provided by Open Data Toronto.
 
 # Data
 
-Our data is of penguins (Figure \@ref(fig:bills)).
+Apartment Building Evaluation from Open Data Toronto is used in this paper [@citeopendatatoronto]. The Apartment Building Evaluation Program named RentSafeTO, works to ensure that apartment owners and operators meet building maintenance standards through measures such as assessments [@citeRentSafeTO].  A Bylaw Enforcement Officer will complete inspections of the apartment building, including but not limited to facilities, common areas, elevators, garbage and recycling management, lighting, mechanical systems, security systems, etc.[@citeRentSafeTO]. The program applies to apartment buildings with three or more storeys and 10 or more units, hence I assume the apartment discussed in this paper will be defined with more than 3 storeys and 10 units.
 
-```{r, dataextract, echo=FALSE, warning=FALSE, message=FALSE}
+The RentSafeTO team collected the data and Municipal Licensing & Standards published the data, which was updated on February 5, 2020. The raw data includes 25 wards in the Greater Toronto Area, evaluation score, built years, confirmed units and storeys and others. R [@citeR], tidyverse [@thereferencecanbewhatever], and dplyr (@citedplyr) are utilized to clean and extract the necessary data. The data frame used contains the built years, ward names, the score of evaluation. Then I filter out the wards, Toronto Centre, Spadina-Fort York and University-Rosedale, because there is too much data to be considered. The three wards selected would be Toronto downtown, which is the center of Toronto. The apartments built before the 1950s are also filtered out since the data would be more realistic and convincing. I also create a data frame containing the average score of three wards every 5 years.
+
+Figures \@ref(fig:Age), \@ref(fig:SFY), \@ref(fig:TC), \@ref(fig:UR), \@ref(fig:Average) are created using ggplot2 [@citeGgplot2]. Figure \@ref(fig:Age) demonstrates the number of apartments built distributed by built years in terms of 3 Toronto wards. Figures \@ref(fig:SFY) \@ref(fig:TC)\@ref(fig:UR) are the scatter plots showing the score of the apartment in a various built years from 1950 to 2021 respectively to Spadina-Fort York, Toronto Centre and University-Rosedale. Figure \@ref(fig:Average) is a line chart that demonstrates the average score of three downtown Toronto wards every 5 years from 1950 to 2021.
+
+# Results
+
+In Figure \@ref(fig:Age), it is obvious that the apartments in Spadina-Fort York start building after the mid-1960s. Before that, there are plenty of apartments built in Toronto Centre and University-Rosedale. The peak of the number of apartments built in both Toronto Centre and University-Rosedale is around the year 1960. Then that number decrease until 2021 except for an increase in near the year 1980. In Spadina-Fort York, the score of evaluation spread widely between 50% to 90% before the 2000s (Figure \@ref(fig:SFY)). A similar pattern also occurs in both Toronto Centre and University-Rosedale, except few spots being higher than 90% (Figure \@ref(fig:TC), Figure \@ref(fig:UR)). 
+
+However, in these three wards, the whole pattern shifts upward after the 2000s, although there are much fewer apartments built after the 2000s. In Figure 5, the average scores experience a decline until the mid-1970s. Later on, there is a steady rise followed by a significant boost beginning in 2010.
+
+# Discussion
+
+According to Figure \@ref(fig:SFY) and Figure \@ref(fig:UR), the relationship between built years and scores is not remarkable before the 2000s, because the scatter plots are randomly spread. Both the maximum and minimum apartment scores rise with much fewer apartments built after 2000s. The connection of built years and scores is revealed. The later apartments is built, the higher score apartments have. Therefore, the correlation exists in both Spadina-Fort York and University-Rosedale after 2000.
+
+On the other head, regarding to Figure \@ref(fig:TC), the change of score is more likely random, although approximately half of apartments built after 2010 reach 90% marks, which is not statistically significant in total. Hence, there is no such connection between evaluation scores and built years in Toronto Centre.
+
+However, the mean scores increase with the decreasing apartments’ age after 2000 in three wards (shown in Figure \@ref(fig:Average)). The scores between 70-75% from 1950 to 1999 could be considered as random floating since the slope of the average scores is low. 
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
 Apartment_evaluation <-
   read_csv(here::here("inputs/data/Apartment_Evaluation.csv"))
 options(warn=-1)
 
 cleaned_data <- Apartment_evaluation |>
-  select(WARDNAME, YEAR_BUILT, CONFIRMED_STOREYS, CONFIRMED_UNITS, SCORE) |>
+  select(WARDNAME, YEAR_BUILT, SCORE) |>
   filter(WARDNAME == "Toronto Centre" | WARDNAME == "Spadina-Fort York" | WARDNAME == "University-Rosedale") |>
-  mutate(UNITS_PER_STOREYS = CONFIRMED_UNITS / CONFIRMED_STOREYS) |>
   drop_na() |>
   filter(YEAR_BUILT >= 1950) 
 
@@ -77,20 +87,20 @@ until_2021 <- cleaned_data |>
 
 
 
-Average_year <- c(median(until_1955$SCORE),
-                  median(until_1960$SCORE),
-                  median(until_1965$SCORE),
-                  median(until_1970$SCORE),
-                  median(until_1975$SCORE),
-                  median(until_1980$SCORE),
-                  median(until_1985$SCORE),
-                  median(until_1990$SCORE),
-                  median(until_1995$SCORE),
-                  median(until_2000$SCORE),
-                  median(until_2005$SCORE),
-                  median(until_2010$SCORE),
-                  median(until_2015$SCORE),
-                  median(until_2021$SCORE)
+Average_year <- c(mean(until_1955$SCORE),
+                  mean(until_1960$SCORE),
+                  mean(until_1965$SCORE),
+                  mean(until_1970$SCORE),
+                  mean(until_1975$SCORE),
+                  mean(until_1980$SCORE),
+                  mean(until_1985$SCORE),
+                  mean(until_1990$SCORE),
+                  mean(until_1995$SCORE),
+                  mean(until_2000$SCORE),
+                  mean(until_2005$SCORE),
+                  mean(until_2010$SCORE),
+                  mean(until_2015$SCORE),
+                  mean(until_2021$SCORE)
                   )
   
 Year_in_5 <- c(1955, 1960, 1965, 1970, 1975, 1980, 1985, 1990, 1995, 2000, 2005, 2010, 2015, 2021)
@@ -99,24 +109,21 @@ Average_score <- data.frame(Year_in_5, Average_year)
 ```
 
 
-```{r Age, fig.cap="Builded year distributino in three wards", echo = FALSE}
+```{r Age, fig.cap="Built years distribution in three wards", echo = FALSE}
 cleaned_data |> 
   ggplot(mapping = aes(x = YEAR_BUILT, group = WARDNAME, fill = WARDNAME)) +
   geom_histogram(method = 'histodot', alpha = 0.4, bins = 50) +
   theme_minimal() +
-  labs(x = "Builded Year",
-       y = "Number of Apartment",
-       fill = "WARD",
+  labs(x = "Built Year",
+       y = "Number of Apartments",
+       fill = "WARDs",
        caption = "Data source: OPEN DATA TORONTO.") +
   scale_color_brewer(palette = "Set3") +
   theme(legend.position = "bottom")
 ```
 
-Talk more about it.
 
-Also bills and their average (Figure \@ref(fig:billssssss)). (Notice how you can change the height and width so they don't take the whole page?)
-
-```{r}
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
 Spadina_fort_York_data <- 
   cleaned_data |>
   filter(WARDNAME == "Spadina-Fort York")
@@ -130,97 +137,62 @@ University_Rosedale_data <-
   filter(WARDNAME == "University-Rosedale")
 ```
 
-```{r}
+```{r SFY, fig.cap="the scores of the apartment in various built years in ward Spadina-Fort York from 1950 to 2021", echo = FALSE}
 Spadina_fort_York_data |>
   ggplot(mapping = aes(x = YEAR_BUILT, y = SCORE)) +
   geom_jitter() +
   geom_point(alpha = 0.5) +
   theme_minimal() +
-  labs(x = "Builded Year",
-       y = "Score of the apartment",
+  labs(x = "Built Years",
+       y = "Scores of the apartment",
        caption = "Data source: OPEN DATA TORONTO.") +
   scale_color_brewer(palette = "Set1") +
   theme(legend.position = "bottom")
 ```
 
 
-```{r}
+```{r TC, fig.cap="the scores of the apartment in various built years in ward Toronto cerntre from 1950 to 2021", echo = FALSE}
 Toronto_cerntre_data |>
   ggplot(mapping = aes(x = YEAR_BUILT, y = SCORE)) +
   geom_jitter() +
   geom_point(alpha = 0.5) +
   theme_minimal() +
-  labs(x = "Builded Year",
-       y = "Score of the apartment",
+  labs(x = "Built Years",
+       y = "Scores of the apartment",
        caption = "Data source: OPEN DATA TORONTO.") +
   theme(legend.position = "bottom")
 ```
 
 
-```{r billssssss, fig.cap="More bills of penguins", echo = FALSE, fig.width=8, fig.height=4}
+```{r UR, fig.cap="the scores of the apartment in various built years in ward University-Rosedale from 1950 to 2021", echo = FALSE}
 University_Rosedale_data |>
   ggplot(mapping = aes(x = YEAR_BUILT, y = SCORE)) +
   geom_jitter() +
   geom_point(alpha = 0.5) +
   theme_minimal() +
-  labs(x = "Builded Year",
-       y = "Score of the apartment",
+  labs(x = "Built Years",
+       y = "Scores of the apartment",
        caption = "Data source: OPEN DATA TORONTO.") +
   theme(legend.position = "bottom")
 
 ```
 
-Talk way more about it. 
-```{r}
+```{r Average, fig.cap="the average scores of total three downtown Toronto wards in every 5 years from 1950 to 2021", echo = FALSE}
 Average_score |>
   ggplot(mapping = aes(x = Year_in_5, y = Average_year)) +
   geom_line() +
   theme_minimal() +
-  labs(x = "Builded Year",
-       y = "Score of the apartment",
+  labs(x = "Built Years",
+       y = "Scores of the apartment",
        caption = "Data source: OPEN DATA TORONTO.")
 ```
 
 
+# Conclusion
 
-# Model
-
-
-
-
-Here's a dumb example of how to use some references: In paper we run our analysis in `R` [@citeR]. We also use the `tidyverse` which was written by @thereferencecanbewhatever If we were interested in baseball data then @citeLahman could be useful. 
-
-We can use maths by including latex between dollar signs, for instance $\theta$.
-
-
-# Results
-
-# Discussion
-
-## First discussion point
-
-If my paper were 10 pages, then should be be at least 2.5 pages. The discussion is a chance to show off what you know and what you learnt from all this. 
-
-## Second discussion point
-
-## Third discussion point
-
-## Weaknesses and next steps
-
-Weaknesses and next steps should also be included.
+In conclusion, the bias that tenants believe the newer apartment will have a higher score of facilities, common areas, elevators, garbage and recycling management, lighting, mechanical systems, security systems, etc. is supported by the data analysis only if the apartments are built after 2000. The figures could be easily generalized and used to prove the bias. However, the methods used in this paper have limitations. More information on the apartment evaluation in different wards needs to be analyzed to strengthen or weaken the bias. The linear regression could be helpful when we are discussing the relationship. 
 
 \newpage
-
-\appendix
-
-# Appendix {-}
-
-
-# Additional details
-
-
-\newpage
-
 
 # References
 
