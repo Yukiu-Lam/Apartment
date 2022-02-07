@@ -1,5 +1,4 @@
-# starter_folder
+This paper discusses the connection between Toronto apartments built age and evaluation scores in three Toronto wards Spadina-Fort York, Toronto Centre and University-Rosedale
 
-This repo....
 
-It is organised as follows...
+The apartment evaluation data was pulled from Open Data Toronto to analyze the change in evaluation scores with the building age. Although the built year does not affect evaluation scores before 2000, the scores increase with the newer apartments when the apartment was built after 2000. This would be true at least in both Spadina-Fort York and University-Rosedale. This paper purposes to let tenants have a better understanding of the relationship between built years and evaluation scores.
