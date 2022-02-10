@@ -16,6 +16,4 @@ To contact me, email 📫 at yuqiao.lin@mail.utoronto.ca
 
 
 
-#### 📈 Stats 
 
-![Metrics](https://github.com/Yukiu-Lam/Yukiu-Lam/raw/main/github-metrics.svg)
